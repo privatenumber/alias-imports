@@ -132,6 +132,29 @@ export default testSuite(({ describe }) => {
 			await fixture.rm();
 		});
 
+		test('alias can map to a dependency with the same name (no infinite loop)', async () => {
+			const fixture = await createFixture({
+				'package.json': JSON.stringify({
+					imports: {
+						pkg: 'pkg',
+					},
+				}),
+				'index.js': 'require("pkg")',
+
+				'node_modules/pkg': {
+					'index.js': 'console.log("pkg")',
+				},
+			});
+
+			const nodeProcess = await nodeWithAliasImports(
+				path.join(fixture.path, 'index.js'),
+			);
+
+			expect(nodeProcess.stdout).toBe('pkg');
+
+			await fixture.rm();
+		});
+
 		test('conditions', async () => {
 			const fixture = await createFixture({
 				'package.json': JSON.stringify({
