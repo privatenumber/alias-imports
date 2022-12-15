@@ -1,0 +1,60 @@
+{
+	"name": "alias-imports",
+	"version": "0.0.0-semantic-release",
+	"description": "Create bare aliases in the imports map in package.json",
+	"keywords": [
+		"nodejs",
+		"alias",
+		"imports"
+	],
+	"license": "MIT",
+	"repository": "privatenumber/alias-imports",
+	"funding": "https://github.com/privatenumber/alias-imports?sponsor=1",
+	"author": {
+		"name": "Hiroki Osame",
+		"email": "hiroki.osame@gmail.com"
+	},
+	"type": "module",
+	"files": [
+		"dist"
+	],
+	"main": "./dist/index.mjs",
+	"exports": {
+		".": "./dist/index.mjs",
+		"./loader": "./dist/loader.mjs",
+		"./require": "./dist/require.cjs"
+	},
+	"imports": {
+		"#alias-imports": {
+			"types": "./src/index.ts",
+			"development": "./src/index.ts",
+			"default": "./dist/index.mjs"
+		}
+	},
+	"scripts": {
+		"build": "pkgroll --target=node12.20 --minify",
+		"lint": "eslint --cache .",
+		"type-check": "tsc --noEmit",
+		"test": "pnpm build && tsx tests",
+		"dev": "tsx watch --conditions=development tests",
+		"prepack": "pnpm build && clean-pkg-json"
+	},
+	"devDependencies": {
+		"@pvtnbr/eslint-config": "^0.33.0",
+		"@types/node": "^18.11.11",
+		"clean-pkg-json": "^1.2.0",
+		"eslint": "^8.29.0",
+		"execa": "^6.1.0",
+		"fs-fixture": "^1.2.0",
+		"kolorist": "^1.6.0",
+		"manten": "^0.6.0",
+		"pkgroll": "^1.7.0",
+		"resolve-pkg-maps": "^1.0.0",
+		"tsx": "^3.12.1",
+		"type-flag": "^3.0.0",
+		"typescript": "^4.9.3"
+	},
+	"eslintConfig": {
+		"extends": "@pvtnbr"
+	}
+}
