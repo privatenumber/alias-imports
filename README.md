@@ -10,6 +10,11 @@ Create [bare](https://2ality.com/2022/01/esm-specifiers.html#:~:text=same%20code
 
 <sub>Support this project by ⭐️ starring and sharing it. [Follow me](https://github.com/privatenumber) to see what other cool projects I'm working on! ❤️</sub>
 
+## Install
+```
+npm i -D alias-imports
+```
+
 ## Usage
 
 Declare aliases in the `imports` map in `package.json`:
