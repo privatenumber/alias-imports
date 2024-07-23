@@ -7,7 +7,7 @@ const cwd = process.cwd();
 
 export enum Type {
 	Loader = 'loader',
-	Require = 'require',
+	Require = 'require'
 }
 
 const debug = process.env.DEBUG_ALIAS_IMPORTS;

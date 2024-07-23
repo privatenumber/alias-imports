@@ -33,6 +33,7 @@ export const resolve: resolve = async function (
 	defaultResolve,
 ) {
 	if (
+
 		/**
 		 * Since bare specifiers can only be resolved from a parent,
 		 * this should always be true.

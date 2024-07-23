@@ -58,7 +58,7 @@ export const findImports = (
 	filePath: string,
 ): [
 	imports: PathConditionsMap,
-	packageJsonPath: string,
+	packageJsonPath: string
 ] | undefined => {
 	const firstSlash = filePath.indexOf(sep);
 	let lastSlash;

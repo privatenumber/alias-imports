@@ -23,6 +23,6 @@ declare module 'module' {
 			filename: string | null;
 		},
 		isMain: boolean,
-		options?: any,
+		options?: unknown,
 	): string;
 }
