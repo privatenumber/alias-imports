@@ -15,7 +15,7 @@ export const nodeWithAliasImports = (
 	[],
 	{
 		...options,
-		nodeOptions: ['--loader', aliasImports, ...options?.nodeOptions ?? []],
+		nodeOptions: ['--import', aliasImports, ...options?.nodeOptions ?? []],
 	},
 );
 
