@@ -27,11 +27,11 @@ type resolve = (
 	defaultResolve: resolve,
 ) => Promise<Resolved>;
 
-export const resolve: resolve = async function (
+export const resolve: resolve = async (
 	request: string,
 	context,
 	defaultResolve,
-) {
+) => {
 	if (
 
 		/**
@@ -73,5 +73,9 @@ export const resolve: resolve = async function (
 		}
 	}
 
-	return Reflect.apply(defaultResolve, null, arguments);
+	return Reflect.apply(
+		defaultResolve,
+		null,
+		[request, context, defaultResolve],
+	);
 };

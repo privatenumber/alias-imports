@@ -24,10 +24,13 @@ const conditions = Object.freeze([
 
 const resolveFilename = Module._resolveFilename;
 Module._resolveFilename = function (request, parent, isMain, options) {
-	if (isBareSpecifier(request) && (
-		parent?.filename
+	if (
+		isBareSpecifier(request)
+		&& (
+			parent?.filename
 			|| parent?.id === '<repl>'
-	)) {
+		)
+	) {
 		const parentPath = parent?.filename ?? (process.cwd() + path.sep);
 		const foundImports = findImports(parentPath);
 
