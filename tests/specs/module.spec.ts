@@ -186,7 +186,10 @@ describe('Module', () => {
 			'file-a.js': 'console.log("aliased")',
 			node_modules: {
 				pkg: {
-					'package.json': JSON.stringify({ name: 'pkg', type: 'module' }),
+					'package.json': JSON.stringify({
+						name: 'pkg',
+						type: 'module',
+					}),
 					'index.js': 'console.log("non-aliased")',
 				},
 			},
@@ -238,7 +241,10 @@ describe('Module', () => {
 			'index.js': 'import "pkg"',
 			node_modules: {
 				pkg: {
-					'package.json': JSON.stringify({ name: 'pkg', type: 'module' }),
+					'package.json': JSON.stringify({
+						name: 'pkg',
+						type: 'module',
+					}),
 					'index.js': 'console.log("pkg")',
 				},
 			},
@@ -249,6 +255,27 @@ describe('Module', () => {
 		);
 
 		expect(nodeProcess.stdout).toBe('pkg');
+	});
+
+	test('surfaces errors from resolved files', async () => {
+		await using fixture = await createFixture({
+			'package.json': JSON.stringify({
+				type: 'module',
+				imports: {
+					a: './file-a.js',
+				},
+			}),
+			'index.js': 'import "a"',
+			'file-a.js': 'syntax error here }{][',
+		});
+
+		const nodeProcess = await nodeWithAliasImports(
+			fixture.getPath('index.js'),
+			{ reject: false },
+		);
+
+		expect(nodeProcess.exitCode).not.toBe(0);
+		expect(nodeProcess.stderr).toMatch(/SyntaxError/);
 	});
 
 	test('repl', async () => {

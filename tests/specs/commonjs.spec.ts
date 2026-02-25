@@ -289,6 +289,26 @@ describe('CommonJS', () => {
 		expect(nodeProcess.stdout).toBe('custom');
 	});
 
+	test('surfaces errors from resolved files', async () => {
+		await using fixture = await createFixture({
+			'package.json': JSON.stringify({
+				imports: {
+					a: './file-a.js',
+				},
+			}),
+			'index.js': 'require("a")',
+			'file-a.js': 'syntax error here }{][',
+		});
+
+		const nodeProcess = await nodeWithAliasImports(
+			fixture.getPath('index.js'),
+			{ reject: false },
+		);
+
+		expect(nodeProcess.exitCode).not.toBe(0);
+		expect(nodeProcess.stderr).toMatch(/SyntaxError/);
+	});
+
 	test('repl', async () => {
 		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
