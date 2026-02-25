@@ -45,10 +45,10 @@
 	},
 	"devDependencies": {
 		"@types/node": "^18.11.11",
+		"ansis": "^4.2.0",
 		"clean-pkg-json": "^1.2.0",
 		"execa": "^6.1.0",
 		"fs-fixture": "^2.11.0",
-		"kolorist": "^1.6.0",
 		"lintroll": "^1.29.1",
 		"manten": "2.0.0-beta.2",
 		"pkgroll": "^1.7.0",

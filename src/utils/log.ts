@@ -1,6 +1,6 @@
 import {
-	inverse, cyan, lightMagenta, yellow, green,
-} from 'kolorist';
+	inverse, magenta, cyan, yellow, green,
+} from 'ansis';
 
 const backtick = (string_: string) => `\`${string_}\``;
 const cwd = process.cwd();
@@ -34,7 +34,7 @@ export const logRequest = (
 
 	console.log(`${
 		inverse(` alias-imports: ${type} `)
-	}\n  Requested by: ${lightMagenta(backtick(parent))}\n  ${
+	}\n  Requested by: ${magenta(backtick(parent))}\n  ${
 		cyan(backtick(request))
 	} → ${
 		yellow(backtick(resolvedImport))
