@@ -44,7 +44,7 @@
 		"get-conditions": "^1.0.1"
 	},
 	"devDependencies": {
-		"@types/node": "^18.11.11",
+		"@types/node": "^20.19.33",
 		"ansis": "^4.2.0",
 		"clean-pkg-json": "^1.2.0",
 		"execa": "^6.1.0",
