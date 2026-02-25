@@ -8,45 +8,38 @@ type PackageJson = {
 
 const packageJsonName = 'package.json';
 
-const cache = new Map<string, false | PathConditionsMap>();
+const cache = new Map<string, PathConditionsMap | undefined>();
 
 const getCustomImports = (imports?: PathConditionsMap) => {
-	let hasKey = false;
 	if (typeof imports !== 'object') {
-		return hasKey;
+		return;
 	}
 
 	const customImports: PathConditionsMap = {};
+	let found = false;
 
 	for (const key in imports) {
 		if (!key.startsWith('#')) {
-			hasKey = true;
+			found = true;
 			customImports[key] = imports[key];
 		}
 	}
 
-	return hasKey ? customImports : hasKey;
+	return found ? customImports : undefined;
 };
 
 const getPackageJsonImports = (packageJsonPath: string) => {
-	let result = cache.get(packageJsonPath);
-
-	if (result !== undefined) {
-		return result;
+	if (cache.has(packageJsonPath)) {
+		return cache.get(packageJsonPath);
 	}
 
 	if (!fs.existsSync(packageJsonPath)) {
-		result = false;
-		cache.set(packageJsonPath, result);
-		return result;
+		cache.set(packageJsonPath, undefined);
+		return;
 	}
 
 	const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8')) as PackageJson;
-	result = (
-		packageJson
-			? getCustomImports(packageJson.imports)
-			: false
-	);
+	const result = getCustomImports(packageJson.imports);
 	cache.set(packageJsonPath, result);
 
 	return result;
@@ -69,10 +62,7 @@ export const findImports = (
 		const packageJsonPath = filePath + sep + packageJsonName;
 		const imports = getPackageJsonImports(packageJsonPath);
 		if (imports) {
-			return [
-				imports,
-				path.dirname(packageJsonPath),
-			];
+			return [imports, filePath];
 		}
 	} while (lastSlash > firstSlash);
 };

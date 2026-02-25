@@ -84,9 +84,5 @@ export const resolve: resolve = async (
 		}
 	}
 
-	return Reflect.apply(
-		defaultResolve,
-		null,
-		[request, context, defaultResolve],
-	);
+	return defaultResolve(request, context, defaultResolve);
 };
