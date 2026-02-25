@@ -24,7 +24,7 @@ Module._resolveFilename = function (request, parent, isMain, options) {
 		const foundImports = findImports(parentPath);
 
 		if (foundImports) {
-			const conditions = options?.conditions ?? defaultConditions;
+			const conditions = (options as { conditions?: string[] })?.conditions ?? defaultConditions;
 			const [imports, basePath] = foundImports;
 			try {
 				const tryPaths = resolveImports(
@@ -48,16 +48,18 @@ Module._resolveFilename = function (request, parent, isMain, options) {
 						logRequest(Type.Require, request, tryPath, resolved, parentPath);
 
 						return resolved;
-					} catch (error) {
-						if (error?.code !== 'MODULE_NOT_FOUND') {
+					} catch (_error) {
+						const error = _error as NodeJS.ErrnoException;
+						if (error.code !== 'MODULE_NOT_FOUND') {
 							throw error;
 						}
 					}
 				}
-			} catch (error) {
+			} catch (_error) {
+				const error = _error as NodeJS.ErrnoException;
 				if (
-					error?.code !== 'MODULE_NOT_FOUND'
-					&& error?.code !== 'ERR_PACKAGE_IMPORT_NOT_DEFINED'
+					error.code !== 'MODULE_NOT_FOUND'
+					&& error.code !== 'ERR_PACKAGE_IMPORT_NOT_DEFINED'
 				) {
 					throw error;
 				}

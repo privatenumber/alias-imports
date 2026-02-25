@@ -67,16 +67,18 @@ export const resolve: resolve = async (
 						logRequest(Type.Loader, request, tryPath, resolved.url, parentPath);
 
 						return resolved;
-					} catch (error) {
-						if (error?.code !== 'ERR_MODULE_NOT_FOUND') {
+					} catch (_error) {
+						const error = _error as NodeJS.ErrnoException;
+						if (error.code !== 'ERR_MODULE_NOT_FOUND') {
 							throw error;
 						}
 					}
 				}
-			} catch (error) {
+			} catch (_error) {
+				const error = _error as NodeJS.ErrnoException;
 				if (
-					error?.code !== 'ERR_MODULE_NOT_FOUND'
-					&& error?.code !== 'ERR_PACKAGE_IMPORT_NOT_DEFINED'
+					error.code !== 'ERR_MODULE_NOT_FOUND'
+					&& error.code !== 'ERR_PACKAGE_IMPORT_NOT_DEFINED'
 				) {
 					throw error;
 				}
