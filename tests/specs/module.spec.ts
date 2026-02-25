@@ -1,4 +1,3 @@
-import path from 'path';
 import { describe, test, expect } from 'manten';
 import { createFixture } from 'fs-fixture';
 import {
@@ -9,7 +8,7 @@ import {
 
 describe('Module', () => {
 	test('resolves', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				type: 'module',
 				imports: {
@@ -23,16 +22,14 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('123');
-
-		await fixture.rm();
 	});
 
 	test('subpath patterns', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				type: 'module',
 				imports: {
@@ -45,16 +42,14 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('123');
-
-		await fixture.rm();
 	});
 
 	test('overwriting dependency imports', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				type: 'module',
 				imports: {
@@ -80,16 +75,14 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('file');
-
-		await fixture.rm();
 	});
 
 	test('resolves dependency', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				type: 'module',
 				imports: {
@@ -104,16 +97,14 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('pkg');
-
-		await fixture.rm();
 	});
 
 	test('alias can map to a dependency with the same name (no infinite loop)', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				type: 'module',
 				imports: {
@@ -128,16 +119,14 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('pkg');
-
-		await fixture.rm();
 	});
 
 	test('conditions', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				type: 'module',
 				imports: {
@@ -153,16 +142,14 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('b');
-
-		await fixture.rm();
 	});
 
 	test('custom conditions', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				type: 'module',
 				imports: {
@@ -178,19 +165,17 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 			{
 				nodeOptions: ['--conditions', 'test'],
 			},
 		);
 
 		expect(nodeProcess.stdout).toBe('test');
-
-		await fixture.rm();
 	});
 
 	test('repl', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				type: 'module',
 				imports: {
@@ -217,7 +202,5 @@ describe('Module', () => {
 		runCommands(nodeProcess, commands);
 
 		await nodeProcess;
-
-		await fixture.rm();
 	});
 });

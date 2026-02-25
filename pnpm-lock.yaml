@@ -22,8 +22,8 @@ importers:
         specifier: ^6.1.0
         version: 6.1.0
       fs-fixture:
-        specifier: ^1.2.0
-        version: 1.2.0
+        specifier: ^2.11.0
+        version: 2.11.0
       kolorist:
         specifier: ^1.6.0
         version: 1.8.0
@@ -1463,9 +1463,9 @@ packages:
     resolution: {integrity: sha512-wzsgA6WOq+09wrU1tsJ09udeR/YZRaeArL9e1wPbFg3GG2yDnC2ldKpxs4xunpFF9DgqCqOIra3bc1HWrJ37Ww==}
     engines: {node: '>=0.4.x'}
 
-  fs-fixture@1.2.0:
-    resolution: {integrity: sha512-bPBNW12US81zxCXzP/BQ6ntSvMXNgX76nHVUxzQJVTmHkzXnbfp+M4mNWeJ9LuCG8M1wyeFov7oiwO9wnCEBjQ==}
-    engines: {node: '>=16.7.0'}
+  fs-fixture@2.11.0:
+    resolution: {integrity: sha512-elzOu5Ru04qPSBT344kngxx1bpq3RbpznEyjTcn+NHI2nvzwDcGt2zde/a6LBmF5SJtgSYBGHAPnel6S1IefeA==}
+    engines: {node: '>=18.0.0'}
 
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
@@ -4195,7 +4195,7 @@ snapshots:
 
   format@0.2.2: {}
 
-  fs-fixture@1.2.0: {}
+  fs-fixture@2.11.0: {}
 
   fs.realpath@1.0.0: {}
 

@@ -1,4 +1,3 @@
-import path from 'path';
 import { describe, test, expect } from 'manten';
 import { execaNode } from 'execa';
 import { createFixture } from 'fs-fixture';
@@ -10,7 +9,7 @@ import {
 
 describe('CommonJS', () => {
 	test('node example', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				imports: {
 					'#a': './some-directory/file-a.js',
@@ -23,16 +22,14 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await execaNode(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('123');
-
-		await fixture.rm();
 	});
 
 	test('resolves', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				imports: {
 					a: './some-directory/file-a.js',
@@ -45,16 +42,14 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('123');
-
-		await fixture.rm();
 	});
 
 	test('subpath patterns', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				imports: {
 					'*': './file-*.js',
@@ -66,16 +61,14 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('123');
-
-		await fixture.rm();
 	});
 
 	test('overwriting dependency imports', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				imports: {
 					'pkg-b': './file.js',
@@ -100,16 +93,14 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('file');
-
-		await fixture.rm();
 	});
 
 	test('resolves dependency', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				imports: {
 					dep: 'pkg',
@@ -123,16 +114,14 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('pkg');
-
-		await fixture.rm();
 	});
 
 	test('alias can map to a dependency with the same name (no infinite loop)', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				imports: {
 					pkg: 'pkg',
@@ -146,16 +135,14 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('pkg');
-
-		await fixture.rm();
 	});
 
 	test('conditions', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				imports: {
 					file: {
@@ -170,16 +157,14 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 		);
 
 		expect(nodeProcess.stdout).toBe('a');
-
-		await fixture.rm();
 	});
 
 	test('custom conditions', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				imports: {
 					file: {
@@ -194,19 +179,17 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
-			path.join(fixture.path, 'index.js'),
+			fixture.getPath('index.js'),
 			{
 				nodeOptions: ['--conditions', 'test'],
 			},
 		);
 
 		expect(nodeProcess.stdout).toBe('test');
-
-		await fixture.rm();
 	});
 
 	test('repl', async () => {
-		const fixture = await createFixture({
+		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
 				imports: {
 					'*': './file-*.js',
@@ -232,7 +215,5 @@ describe('CommonJS', () => {
 		runCommands(nodeProcess, commands);
 
 		await nodeProcess;
-
-		await fixture.rm();
 	});
 });
