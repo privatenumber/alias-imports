@@ -1,25 +1,14 @@
 import Module from 'module';
 import path from 'path';
 import { resolveImports } from 'resolve-pkg-maps';
-import { typeFlag } from 'type-flag';
+import { getConditions } from 'get-conditions';
 import { isBareSpecifier } from './utils/is-bare-specifier.js';
 import { findImports } from './utils/package-json.js';
 import { logRequest, Type } from './utils/log.js';
 
-const { flags } = typeFlag({
-	conditions: {
-		type: [String],
-		alias: 'C',
-	},
-	noAddons: Boolean,
-}, process.execArgv);
-
-// https://github.com/nodejs/node/blob/v19.2.0/lib/internal/modules/cjs/helpers.js#L38
 const conditions = Object.freeze([
 	'require',
-	'node',
-	...(flags.noAddons ? [] : ['node-addons']),
-	...flags.conditions,
+	...getConditions(),
 ]);
 
 const resolveFilename = Module._resolveFilename;

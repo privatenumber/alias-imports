@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      get-conditions:
+        specifier: ^1.0.1
+        version: 1.0.1
     devDependencies:
       '@types/node':
         specifier: ^18.11.11
@@ -38,9 +42,6 @@ importers:
       tsx:
         specifier: ^3.12.1
         version: 3.14.0
-      type-flag:
-        specifier: ^3.0.0
-        version: 3.0.0
       typescript:
         specifier: ^4.9.3
         version: 4.9.5
@@ -1157,8 +1158,8 @@ packages:
   functions-have-names@1.2.3:
     resolution: {integrity: sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==}
 
-  get-conditions@1.0.0:
-    resolution: {integrity: sha512-9wKpu0AjWat7OKzvChkghCCkLmYwc3lUbRP5xDSNI4+SrK4599OXcmJamgpU3pNBUOuaKjSg1NE/6ukFSC8kSA==}
+  get-conditions@1.0.1:
+    resolution: {integrity: sha512-Q7E89EOIkL0lr8xkm/vwmJhTejpX6dO7lRcq/x5WP/W1IY2MDuP7hxUDigLehRm8g8UMm3MX77q5h+rYNvZARw==}
 
   get-intrinsic@1.2.4:
     resolution: {integrity: sha512-5uYhsJH8VJBTv7oslg4BznJYhDoRI6waYCxMmCdnTrcCrHA/fCFKoTFz2JKKE0HdDFUF7/oQuhzumXJK7paBRQ==}
@@ -1894,9 +1895,6 @@ packages:
   shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
-
-  shell-quote@1.8.1:
-    resolution: {integrity: sha512-6j1W9l1iAs/4xYBI1SYOVZyFcCis9b4KCLQ8fgAGG07QvzaRLVVRQvAy85yNmmZSjYjg4MWh4gNvlPujU/5LpA==}
 
   side-channel@1.0.6:
     resolution: {integrity: sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==}
@@ -3439,10 +3437,7 @@ snapshots:
 
   functions-have-names@1.2.3: {}
 
-  get-conditions@1.0.0:
-    dependencies:
-      shell-quote: 1.8.1
-      type-flag: 3.0.0
+  get-conditions@1.0.1: {}
 
   get-intrinsic@1.2.4:
     dependencies:
@@ -3837,7 +3832,7 @@ snapshots:
       eslint-plugin-vue: 9.27.0(eslint@8.57.0)
       eslint-plugin-yml: 1.14.0(eslint@8.57.0)
       execa: 8.0.1
-      get-conditions: 1.0.0
+      get-conditions: 1.0.1
       get-tsconfig: 4.7.6
       globals: 15.8.0
       resolve-pkg-maps: 1.0.0
@@ -4232,8 +4227,6 @@ snapshots:
       shebang-regex: 3.0.0
 
   shebang-regex@3.0.0: {}
-
-  shell-quote@1.8.1: {}
 
   side-channel@1.0.6:
     dependencies:
