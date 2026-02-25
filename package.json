@@ -47,7 +47,7 @@
 		"@types/node": "^18.11.11",
 		"ansis": "^4.2.0",
 		"clean-pkg-json": "^1.2.0",
-		"execa": "^6.1.0",
+		"execa": "^7.2.0",
 		"fs-fixture": "^2.11.0",
 		"get-node": "^15.0.4",
 		"lintroll": "^1.29.1",
