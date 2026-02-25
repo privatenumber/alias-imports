@@ -23,8 +23,8 @@ Declare aliases in the `imports` map in `package.json`:
 {
     "imports": {
         // Aliases
-        "lodash": "./custom-lodash.js"
-    }
+        "lodash": "./custom-lodash.js",
+    },
 }
 ```
 
@@ -43,8 +43,8 @@ With this configuration, all `lodash/*` imports will be aliased to `./custom-lod
 ```json5
 {
     "imports": {
-        "lodash/*": "./custom-lodash/*"
-    }
+        "lodash/*": "./custom-lodash/*",
+    },
 }
 ```
 
@@ -59,9 +59,9 @@ With this configuration, `lodash` will be aliased to `./custom-lodash.js` by def
     "imports": {
         "lodash": {
             "underscore": "underscore",
-            "default": "./custom-lodash.js"
-        }
-    }
+            "default": "./custom-lodash.js",
+        },
+    },
 }
 ```
 
@@ -82,21 +82,21 @@ _package.json_
     "imports": {
         "webpack": {
             "webpack5": "webpack5",
-            "default": "webpack4"
+            "default": "webpack4",
         },
 
         // This entry maps webpack subpaths to webpack4 or webpack5
         "webpack/*": {
             "webpack5": "webpack5/*",
-            "default": "webpack4/*"
-        }
+            "default": "webpack4/*",
+        },
     },
 
     // Install Webpack 4 & 5 to webpack4 & webpack5 respectively
     "devDependencies": {
         "webpack4": "npm:webpack@4.42.0",
-        "webpack5": "npm:webpack@5.10.1"
-    }
+        "webpack5": "npm:webpack@5.10.1",
+    },
 }
 ```
 
