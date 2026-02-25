@@ -188,6 +188,107 @@ describe('CommonJS', () => {
 		expect(nodeProcess.stdout).toBe('test');
 	});
 
+	test('non-aliased imports still resolve', async () => {
+		await using fixture = await createFixture({
+			'package.json': JSON.stringify({
+				imports: {
+					a: './file-a.js',
+				},
+			}),
+			'index.js': 'require("a"); require("pkg")',
+			'file-a.js': 'console.log("aliased")',
+			node_modules: {
+				pkg: {
+					'package.json': JSON.stringify({ name: 'pkg' }),
+					'index.js': 'console.log("non-aliased")',
+				},
+			},
+		});
+
+		const nodeProcess = await nodeWithAliasImports(
+			fixture.getPath('index.js'),
+		);
+
+		expect(nodeProcess.stdout).toBe('aliased\nnon-aliased');
+	});
+
+	test('nested directory resolves closest package.json', async () => {
+		await using fixture = await createFixture({
+			'package.json': JSON.stringify({
+				imports: {
+					a: './root.js',
+				},
+			}),
+			'root.js': 'console.log("root")',
+			sub: {
+				'package.json': JSON.stringify({
+					imports: {
+						a: './sub.js',
+					},
+				}),
+				'index.js': 'require("a")',
+				'sub.js': 'console.log("sub")',
+			},
+		});
+
+		const nodeProcess = await nodeWithAliasImports(
+			fixture.getPath('sub/index.js'),
+		);
+
+		expect(nodeProcess.stdout).toBe('sub');
+	});
+
+	test('unmatched specifier falls through to default resolution', async () => {
+		await using fixture = await createFixture({
+			'package.json': JSON.stringify({
+				imports: {
+					a: './file-a.js',
+				},
+			}),
+			'index.js': 'require("pkg")',
+			node_modules: {
+				pkg: {
+					'package.json': JSON.stringify({ name: 'pkg' }),
+					'index.js': 'console.log("pkg")',
+				},
+			},
+		});
+
+		const nodeProcess = await nodeWithAliasImports(
+			fixture.getPath('index.js'),
+		);
+
+		expect(nodeProcess.stdout).toBe('pkg');
+	});
+
+	test('NODE_OPTIONS --conditions', async () => {
+		await using fixture = await createFixture({
+			'package.json': JSON.stringify({
+				imports: {
+					file: {
+						custom: './file-b.js',
+						default: './file-a.js',
+					},
+				},
+			}),
+			'index.js': 'require("file")',
+			'file-a.js': 'console.log("default")',
+			'file-b.js': 'console.log("custom")',
+		});
+
+		const nodeProcess = await nodeWithAliasImports(
+			fixture.getPath('index.js'),
+			{
+				env: {
+					...process.env,
+					NODE_OPTIONS: '--conditions custom',
+				},
+			},
+		);
+
+		expect(nodeProcess.stdout).toBe('custom');
+	});
+
 	test('repl', async () => {
 		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
