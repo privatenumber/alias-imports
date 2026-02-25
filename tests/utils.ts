@@ -1,51 +1,48 @@
 import path from 'path';
-import { execa, type ExecaChildProcess } from 'execa';
+import type { ChildProcess } from 'node:child_process';
+import spawn, { type Options } from 'nano-spawn';
 
 const aliasImports = path.resolve('./dist/index.mjs');
 
-type RunOptions = {
-	nodeOptions?: string[];
-	cwd?: string;
-	env?: Record<string, string | undefined>;
-	reject?: boolean;
-};
+export const createNode = ({ path: nodePath }: { path: string }) => (
+	args: string[],
+	options?: Options,
+) => spawn(nodePath, args, options);
+
+export type Node = ReturnType<typeof createNode>;
 
 export const nodeWithAliasImports = (
-	nodePath: string,
+	node: Node,
 	filePath: string,
-	options?: RunOptions,
-) => execa(nodePath, [
+	options?: Options & { nodeOptions?: string[] },
+) => node([
 	'--import',
 	aliasImports,
 	...options?.nodeOptions ?? [],
 	...(filePath ? [filePath] : []),
-], {
-	cwd: options?.cwd,
-	env: options?.env,
-	reject: options?.reject,
-});
+], options);
 
 export type Command = [command: string, output: string];
 export const runCommands = (
-	nodeProcess: ExecaChildProcess<string>,
+	childProcess: ChildProcess,
 	commands: Command[],
 ) => {
 	let currentCommand: Command | undefined;
 
-	nodeProcess.stdout!.on('data', (d) => {
+	childProcess.stdout!.on('data', (d) => {
 		const data = d.toString();
 
 		if (currentCommand) {
 			if (data.includes(currentCommand[1])) {
 				currentCommand = undefined;
-				nodeProcess.stdin!.write('\n');
+				childProcess.stdin!.write('\n');
 			}
 		} else if (data.includes('> ')) {
 			if (commands.length > 0) {
 				currentCommand = commands.shift()!;
-				nodeProcess.stdin!.write(`${currentCommand[0]}\n`);
+				childProcess.stdin!.write(`${currentCommand[0]}\n`);
 			} else {
-				nodeProcess.stdin!.write('.exit\n');
+				childProcess.stdin!.write('.exit\n');
 			}
 		}
 	});

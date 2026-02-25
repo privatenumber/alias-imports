@@ -3,10 +3,11 @@ import { createFixture } from 'fs-fixture';
 import {
 	nodeWithAliasImports,
 	runCommands,
+	type Node,
 	type Command,
 } from '../utils.ts';
 
-export const module = (nodePath: string) => describe('Module', () => {
+export const module = (node: Node) => describe('Module', () => {
 	test('resolves', async () => {
 		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
@@ -21,12 +22,12 @@ export const module = (nodePath: string) => describe('Module', () => {
 			'file-b.js': 'console.log(123)',
 		});
 
-		const nodeProcess = await nodeWithAliasImports(
-			nodePath,
+		const { stdout } = await nodeWithAliasImports(
+			node,
 			fixture.getPath('index.js'),
 		);
 
-		expect(nodeProcess.stdout).toBe('123');
+		expect(stdout).toBe('123');
 	});
 
 	test('subpath patterns', async () => {
@@ -42,12 +43,12 @@ export const module = (nodePath: string) => describe('Module', () => {
 			'file-b.js': 'console.log(123)',
 		});
 
-		const nodeProcess = await nodeWithAliasImports(
-			nodePath,
+		const { stdout } = await nodeWithAliasImports(
+			node,
 			fixture.getPath('index.js'),
 		);
 
-		expect(nodeProcess.stdout).toBe('123');
+		expect(stdout).toBe('123');
 	});
 
 	test('overwriting dependency imports', async () => {
@@ -76,12 +77,12 @@ export const module = (nodePath: string) => describe('Module', () => {
 			},
 		});
 
-		const nodeProcess = await nodeWithAliasImports(
-			nodePath,
+		const { stdout } = await nodeWithAliasImports(
+			node,
 			fixture.getPath('index.js'),
 		);
 
-		expect(nodeProcess.stdout).toBe('file');
+		expect(stdout).toBe('file');
 	});
 
 	test('resolves dependency', async () => {
@@ -99,12 +100,12 @@ export const module = (nodePath: string) => describe('Module', () => {
 			},
 		});
 
-		const nodeProcess = await nodeWithAliasImports(
-			nodePath,
+		const { stdout } = await nodeWithAliasImports(
+			node,
 			fixture.getPath('index.js'),
 		);
 
-		expect(nodeProcess.stdout).toBe('pkg');
+		expect(stdout).toBe('pkg');
 	});
 
 	test('alias can map to a dependency with the same name (no infinite loop)', async () => {
@@ -122,12 +123,12 @@ export const module = (nodePath: string) => describe('Module', () => {
 			},
 		});
 
-		const nodeProcess = await nodeWithAliasImports(
-			nodePath,
+		const { stdout } = await nodeWithAliasImports(
+			node,
 			fixture.getPath('index.js'),
 		);
 
-		expect(nodeProcess.stdout).toBe('pkg');
+		expect(stdout).toBe('pkg');
 	});
 
 	test('conditions', async () => {
@@ -146,12 +147,12 @@ export const module = (nodePath: string) => describe('Module', () => {
 			'file-b.js': 'console.log("b")',
 		});
 
-		const nodeProcess = await nodeWithAliasImports(
-			nodePath,
+		const { stdout } = await nodeWithAliasImports(
+			node,
 			fixture.getPath('index.js'),
 		);
 
-		expect(nodeProcess.stdout).toBe('b');
+		expect(stdout).toBe('b');
 	});
 
 	test('custom conditions', async () => {
@@ -170,15 +171,15 @@ export const module = (nodePath: string) => describe('Module', () => {
 			'file-b.js': 'console.log("test")',
 		});
 
-		const nodeProcess = await nodeWithAliasImports(
-			nodePath,
+		const { stdout } = await nodeWithAliasImports(
+			node,
 			fixture.getPath('index.js'),
 			{
 				nodeOptions: ['--conditions', 'test'],
 			},
 		);
 
-		expect(nodeProcess.stdout).toBe('test');
+		expect(stdout).toBe('test');
 	});
 
 	test('non-aliased imports still resolve', async () => {
@@ -202,12 +203,12 @@ export const module = (nodePath: string) => describe('Module', () => {
 			},
 		});
 
-		const nodeProcess = await nodeWithAliasImports(
-			nodePath,
+		const { stdout } = await nodeWithAliasImports(
+			node,
 			fixture.getPath('index.js'),
 		);
 
-		expect(nodeProcess.stdout).toBe('aliased\nnon-aliased');
+		expect(stdout).toBe('aliased\nnon-aliased');
 	});
 
 	test('nested directory resolves closest package.json', async () => {
@@ -231,12 +232,12 @@ export const module = (nodePath: string) => describe('Module', () => {
 			},
 		});
 
-		const nodeProcess = await nodeWithAliasImports(
-			nodePath,
+		const { stdout } = await nodeWithAliasImports(
+			node,
 			fixture.getPath('sub/index.js'),
 		);
 
-		expect(nodeProcess.stdout).toBe('sub');
+		expect(stdout).toBe('sub');
 	});
 
 	test('unmatched specifier falls through to default resolution', async () => {
@@ -259,12 +260,12 @@ export const module = (nodePath: string) => describe('Module', () => {
 			},
 		});
 
-		const nodeProcess = await nodeWithAliasImports(
-			nodePath,
+		const { stdout } = await nodeWithAliasImports(
+			node,
 			fixture.getPath('index.js'),
 		);
 
-		expect(nodeProcess.stdout).toBe('pkg');
+		expect(stdout).toBe('pkg');
 	});
 
 	test('surfaces errors from resolved files', async () => {
@@ -279,14 +280,17 @@ export const module = (nodePath: string) => describe('Module', () => {
 			'file-a.js': 'syntax error here }{][',
 		});
 
-		const nodeProcess = await nodeWithAliasImports(
-			nodePath,
+		const error = await nodeWithAliasImports(
+			node,
 			fixture.getPath('index.js'),
-			{ reject: false },
+		).then(
+			() => { throw new Error('Expected failure'); },
+			(error_: unknown) => error_ as { exitCode: number;
+				stderr: string; },
 		);
 
-		expect(nodeProcess.exitCode).not.toBe(0);
-		expect(nodeProcess.stderr).toMatch(/SyntaxError/);
+		expect(error.exitCode).not.toBe(0);
+		expect(error.stderr).toMatch(/SyntaxError/);
 	});
 
 	test('repl', async () => {
@@ -301,8 +305,8 @@ export const module = (nodePath: string) => describe('Module', () => {
 			'file-b.js': 'console.log("file-b")',
 		});
 
-		const nodeProcess = nodeWithAliasImports(
-			nodePath,
+		const subprocess = nodeWithAliasImports(
+			node,
 			'',
 			{
 				nodeOptions: ['--interactive'],
@@ -310,13 +314,15 @@ export const module = (nodePath: string) => describe('Module', () => {
 			},
 		);
 
+		const childProcess = await subprocess.nodeChildProcess;
+
 		const commands: Command[] = [
 			['import("a")', 'file-a'],
 			['import("b")', 'file-b'],
 		];
 
-		runCommands(nodeProcess, commands);
+		runCommands(childProcess, commands);
 
-		await nodeProcess;
+		await subprocess;
 	});
 });
