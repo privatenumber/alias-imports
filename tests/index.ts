@@ -1,6 +1,6 @@
 import { describe } from 'manten';
 
-describe('alias-imports', ({ runTestSuite }) => {
-	runTestSuite(import('./specs/commonjs.spec.ts'));
-	runTestSuite(import('./specs/module.spec.ts'));
+describe('alias-imports', () => {
+	import('./specs/commonjs.spec.ts');
+	import('./specs/module.spec.ts');
 });

@@ -50,7 +50,7 @@
 		"fs-fixture": "^1.2.0",
 		"kolorist": "^1.6.0",
 		"lintroll": "^1.29.1",
-		"manten": "^0.6.0",
+		"manten": "2.0.0-beta.2",
 		"pkgroll": "^1.7.0",
 		"resolve-pkg-maps": "^1.0.0",
 		"typescript": "^5.9.3"
