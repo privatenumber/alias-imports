@@ -6,7 +6,7 @@ import {
 	type Command,
 } from '../utils.ts';
 
-describe('Module', () => {
+export const module = (nodePath: string) => describe('Module', () => {
 	test('resolves', async () => {
 		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
@@ -22,6 +22,7 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -42,6 +43,7 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -75,6 +77,7 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -97,6 +100,7 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -119,6 +123,7 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -142,6 +147,7 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -165,6 +171,7 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 			{
 				nodeOptions: ['--conditions', 'test'],
@@ -196,6 +203,7 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -224,6 +232,7 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('sub/index.js'),
 		);
 
@@ -251,6 +260,7 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -270,6 +280,7 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 			{ reject: false },
 		);
@@ -291,6 +302,7 @@ describe('Module', () => {
 		});
 
 		const nodeProcess = nodeWithAliasImports(
+			nodePath,
 			'',
 			{
 				nodeOptions: ['--interactive'],

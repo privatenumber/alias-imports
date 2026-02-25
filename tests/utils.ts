@@ -1,23 +1,29 @@
 import path from 'path';
-import {
-	execaNode,
-	type NodeOptions,
-	type ExecaChildProcess,
-} from 'execa';
+import { execa, type ExecaChildProcess } from 'execa';
 
 const aliasImports = path.resolve('./dist/index.mjs');
 
+type RunOptions = {
+	nodeOptions?: string[];
+	cwd?: string;
+	env?: Record<string, string | undefined>;
+	reject?: boolean;
+};
+
 export const nodeWithAliasImports = (
+	nodePath: string,
 	filePath: string,
-	options?: NodeOptions<string>,
-) => execaNode(
-	filePath,
-	[],
-	{
-		...options,
-		nodeOptions: ['--import', aliasImports, ...options?.nodeOptions ?? []],
-	},
-);
+	options?: RunOptions,
+) => execa(nodePath, [
+	'--import',
+	aliasImports,
+	...options?.nodeOptions ?? [],
+	...(filePath ? [filePath] : []),
+], {
+	cwd: options?.cwd,
+	env: options?.env,
+	reject: options?.reject,
+});
 
 export type Command = [command: string, output: string];
 export const runCommands = (

@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'manten';
-import { execaNode } from 'execa';
+import { execa } from 'execa';
 import { createFixture } from 'fs-fixture';
 import {
 	nodeWithAliasImports,
@@ -7,7 +7,7 @@ import {
 	type Command,
 } from '../utils.ts';
 
-describe('CommonJS', () => {
+export const commonjs = (nodePath: string) => describe('CommonJS', () => {
 	test('node example', async () => {
 		await using fixture = await createFixture({
 			'package.json': JSON.stringify({
@@ -21,9 +21,9 @@ describe('CommonJS', () => {
 			'file-b.js': 'console.log(123)',
 		});
 
-		const nodeProcess = await execaNode(
+		const nodeProcess = await execa(nodePath, [
 			fixture.getPath('index.js'),
-		);
+		]);
 
 		expect(nodeProcess.stdout).toBe('123');
 	});
@@ -42,6 +42,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -61,6 +62,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -93,6 +95,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -114,6 +117,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -135,6 +139,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -157,6 +162,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -179,6 +185,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 			{
 				nodeOptions: ['--conditions', 'test'],
@@ -206,6 +213,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -232,6 +240,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('sub/index.js'),
 		);
 
@@ -255,6 +264,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 		);
 
@@ -277,6 +287,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 			{
 				env: {
@@ -301,6 +312,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = await nodeWithAliasImports(
+			nodePath,
 			fixture.getPath('index.js'),
 			{ reject: false },
 		);
@@ -321,6 +333,7 @@ describe('CommonJS', () => {
 		});
 
 		const nodeProcess = nodeWithAliasImports(
+			nodePath,
 			'',
 			{
 				nodeOptions: ['--interactive'],
