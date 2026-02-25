@@ -1,7 +1,7 @@
 import { isMainThread } from 'node:worker_threads';
 import module from 'node:module';
-import { nodeVersionSatisfies } from './utils/node-version-satisfies.js';
-import './require.js';
+import { nodeVersionSatisfies } from './utils/node-version-satisfies.ts';
+import './require.ts';
 
 // Loaded via --import flag
 if (
@@ -19,4 +19,4 @@ if (
 	);
 }
 
-export * from './loader.js';
+export * from './loader.ts';

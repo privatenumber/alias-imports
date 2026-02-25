@@ -1,9 +1,9 @@
 import { fileURLToPath } from 'url';
 import path from 'path';
 import { resolveImports } from 'resolve-pkg-maps';
-import { findImports } from './utils/package-json.js';
-import { isBareSpecifier } from './utils/is-bare-specifier.js';
-import { logRequest, Type } from './utils/log.js';
+import { findImports } from './utils/package-json.ts';
+import { isBareSpecifier } from './utils/is-bare-specifier.ts';
+import { logRequest, Type } from './utils/log.ts';
 
 type ModuleFormat =
 	| 'builtin'

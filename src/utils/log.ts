@@ -5,10 +5,11 @@ import {
 const backtick = (string_: string) => `\`${string_}\``;
 const cwd = process.cwd();
 
-export enum Type {
-	Loader = 'loader',
-	Require = 'require'
-}
+export const Type = {
+	Loader: 'loader',
+	Require: 'require',
+} as const;
+export type Type = typeof Type[keyof typeof Type];
 
 const debug = process.env.DEBUG_ALIAS_IMPORTS;
 

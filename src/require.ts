@@ -2,9 +2,9 @@ import Module from 'module';
 import path from 'path';
 import { resolveImports } from 'resolve-pkg-maps';
 import { getConditions } from 'get-conditions';
-import { isBareSpecifier } from './utils/is-bare-specifier.js';
-import { findImports } from './utils/package-json.js';
-import { logRequest, Type } from './utils/log.js';
+import { isBareSpecifier } from './utils/is-bare-specifier.ts';
+import { findImports } from './utils/package-json.ts';
+import { logRequest, Type } from './utils/log.ts';
 
 const conditions = Object.freeze([
 	'require',

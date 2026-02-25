@@ -6,7 +6,7 @@ import {
 	nodeWithAliasImports,
 	runCommands,
 	type Command,
-} from '../utils.js';
+} from '../utils.ts';
 
 export default testSuite(({ describe }) => {
 	describe('CommonJS', ({ test }) => {
