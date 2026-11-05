@@ -5,33 +5,27 @@ import { findImports } from './utils/package-json.ts';
 import { isBareSpecifier } from './utils/is-bare-specifier.ts';
 import { logRequest, Type } from './utils/log.ts';
 
-type ModuleFormat =
-	| 'builtin'
-	| 'dynamic'
-	| 'commonjs'
-	| 'json'
-	| 'module'
-	| 'wasm';
-
 type Resolved = {
 	url: string;
-	format: ModuleFormat | undefined;
+	format?: string | null;
 };
 
-type resolve = (
+type Resolve<T> = (
 	request: string,
 	context: {
 		conditions: string[];
 		parentURL: string | undefined;
 	},
-	defaultResolve: resolve,
-) => Promise<Resolved>;
+	defaultResolve: NextResolve<T>,
+) => T;
 
-export const resolve: resolve = async (
+type NextResolve<T> = (request: string, context: Parameters<Resolve<T>>[1]) => T;
+
+const resolveWithAliases = <T extends Resolved | Promise<Resolved>>(
 	request: string,
-	context,
-	defaultResolve,
-) => {
+	context: Parameters<Resolve<T>>[1],
+	defaultResolve: NextResolve<T>,
+): T => {
 	if (
 
 		/**
@@ -47,44 +41,62 @@ export const resolve: resolve = async (
 
 		if (foundImports) {
 			const [imports, basePath] = foundImports;
+			let tryPaths: string[];
 			try {
-				const tryPaths = resolveImports(
+				tryPaths = resolveImports(
 					imports,
 					request,
-					context.conditions,
+					// Early synchronous hooks pass a Set for CommonJS conditions.
+					[...context.conditions],
 				);
+			} catch (_error) {
+				const error = _error as NodeJS.ErrnoException;
+				if (error.code !== 'ERR_MODULE_NOT_FOUND' && error.code !== 'ERR_PACKAGE_IMPORT_NOT_DEFINED') {
+					throw error;
+				}
+				return defaultResolve(request, context);
+			}
 
-				for (const tryPath of tryPaths) {
+			const tryResolve = (index: number): T => {
+				if (index < tryPaths.length) {
+					const tryPath = tryPaths[index];
+					const onError = (_error: unknown): T => {
+						const error = _error as NodeJS.ErrnoException;
+						if (error.code === 'ERR_MODULE_NOT_FOUND') {
+							return tryResolve(index + 1);
+						}
+						if (error.code === 'ERR_PACKAGE_IMPORT_NOT_DEFINED') {
+							return defaultResolve(request, context);
+						}
+						throw error;
+					};
+					const onResolved = (resolved: Resolved) => {
+						logRequest(Type.Loader, request, tryPath, resolved.url, parentPath);
+						return resolved;
+					};
 					try {
-						const resolved = await defaultResolve(
+						const resolved = defaultResolve(
 							tryPath.startsWith('.')
 								? path.resolve(basePath, tryPath)
 								: tryPath,
 							context,
-							defaultResolve,
 						);
 
-						logRequest(Type.Loader, request, tryPath, resolved.url, parentPath);
-
-						return resolved;
+						return (resolved instanceof Promise
+							? resolved.then(onResolved, onError)
+							: onResolved(resolved)) as T;
 					} catch (_error) {
-						const error = _error as NodeJS.ErrnoException;
-						if (error.code !== 'ERR_MODULE_NOT_FOUND') {
-							throw error;
-						}
+						return onError(_error);
 					}
 				}
-			} catch (_error) {
-				const error = _error as NodeJS.ErrnoException;
-				if (
-					error.code !== 'ERR_MODULE_NOT_FOUND'
-					&& error.code !== 'ERR_PACKAGE_IMPORT_NOT_DEFINED'
-				) {
-					throw error;
-				}
-			}
+				return defaultResolve(request, context);
+			};
+			return tryResolve(0);
 		}
 	}
 
-	return defaultResolve(request, context, defaultResolve);
+	return defaultResolve(request, context);
 };
+
+export const resolve: Resolve<Promise<Resolved>> = async (...args) => resolveWithAliases(...args);
+export const resolveSync: Resolve<Resolved> = (...args) => resolveWithAliases(...args);
